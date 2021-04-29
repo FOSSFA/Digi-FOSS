@@ -29,13 +29,24 @@ Get the remaining time until adhan
 /ramadan [city name] (Default: Tehran)
 ```
 
-### New Feature Task
+#### Other
+
+Automatic Feature
+
+##### Welcome Message
+
+> سلام «ایدی کاربر» عزیز
+>
+> به گروه «نام گروه» خوش اومدی
+
+### Feature Task
 
 - [ ] Warning
 - [ ] Restrict user 
 - [ ] Group Lock
 - [ ] Anti-link 
+- [ ] Custom Media Filter
 - [ ] Anti-spam
 - [ ] Anti-flood
-- [ ] Welcome Message
+- [x] Welcome Message
 
