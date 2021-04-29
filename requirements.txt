@@ -1,0 +1,11 @@
+async-lru==1.0.2
+certifi==2020.12.5
+chardet==4.0.0
+idna==2.10
+pyaes==1.6.1
+Pyrogram==1.2.9
+PySocks==1.7.1
+pytz==2021.1
+requests==2.25.1
+TgCrypto==1.2.2
+urllib3==1.26.4
