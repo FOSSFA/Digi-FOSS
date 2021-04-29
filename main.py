@@ -21,23 +21,20 @@ async def start(client, message: Message):
     # await message.reply_text(str(message.reply_to_message.text))  # اطلاعات درباره پیام رپلای شده
     # await message.reply_text(str(message.photo))
     # await message.reply_to_message.pin(True, True)
-    await app.send_message("258564057", "bot started by:@" + str(message.reply_to_message.from_user.username))
+    await app.send_message("258564057", "bot started by:@" + str(message.from_user.username))
 
 
-# -- حذف پیام --
-@app.on_message(filters.command("del") | filters.regex(r"حذف"))
-async def del_10(c, m: Message):
-    counter = 0
-    nums = m.text.split(' ')
-    nums = int(nums[1])
-    msg_id = m.message_id
-    while counter != nums:
-        if not await app.delete_messages(m.chat.id, msg_id):
-            # counter += 1
-            msg_id -= 1
-        else:
-            counter += 1
-    await m.reply_text(str(counter) + " پیام پاک شد!")
+@app.on_message(filters.command("help"))
+async def help_menu(c, m: Message):
+    await m.reply_text("""
+    حذف پیام ها: /del [number] یا حذف (تعداد پیام)
+    اخطار: ریپلای روی کاربر مورد نظر و ارسال پیام : اخطار | /warn
+    حذف اخطار: ریپلای روی کاربر و ارسال پبام: حذف اخطار
+    اسپم کردن: /spam [number] [text] حداکثر ۲۰ پیام
+    
+    
+    
+    """)
 
 
 app.run()

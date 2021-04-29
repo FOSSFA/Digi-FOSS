@@ -3,34 +3,48 @@ import requests
 import datetime
 import time
 import pytz
+import logging
+from enum import Enum
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+ch.setFormatter(formatter)
+
+logger.addHandler(ch)
 
 
-# A python bot to repost a telegram message that passed one month from first post
-# to reread the programming posts
-
-def get_azan(city, day=None):
-    data = requests.get('https://api.keybit.ir/owghat', params={'city': city, "day": day})
-    json_data = json.loads(data.content)['result']
-
-    azan = json_data['azan_maghreb']
-    day = json_data['day']
-
-    return azan, day
+class AzanTypes(Enum):
+    Maghrib = 'Maghrib'
 
 
-cities_code = {'تهران': '1', 'مشهد': '13', 'تبریز': '6', 'قم': '11', 'اصفهان': '2', 'شیراز': '8', 'یزد': '14',
-               'ارومیه': '3', 'کرمان': '19', 'اهواز': '5', 'بجنورد': '15', 'گرگان': '18', 'ساری': '17', 'رشت': '16',
-               'اردبیل': '26', 'سمنان': '27', 'قزوین': '10', 'زنجان': '25', 'سنندج': '22', 'کرمانشاه': '21',
-               'همدان': '24', 'بیرجند': '827', 'ایلام': '29', 'خرم آباد': '30', 'شهرکرد': '31', 'یاسوج': '32',
-               'بوشهر': '20', 'زاهدان': '12', 'بندر عباس': '7', 'اراک': '4', 'کرج': '9', 'دزفول': '342',
-               'کوالالامپور': '115', 'ساوه': '991', 'شاهرود': '578', 'بروجرد': '479', 'مرند': '450', 'سبزوار': '822',
-               'استانبول': '976', 'کیش': '968'}
+def get_azan(city, timestamp=None, azan_type=AzanTypes.Maghrib):
+    timestamp_text = f"/{timestamp}" if not timestamp is None else ""
+    url = f"http://api.aladhan.com/v1/timingsByAddress" + timestamp_text
+    try:
+        data = requests.get(url, params={"address": city, "method": 7})
+        json_data = json.loads(data.content)['data']
+
+        azan = json_data['timings'][azan_type.value]
+        timezone = json_data['meta']['timezone']
+        timestamp = json_data['date']['timestamp']
+    except Exception as e:
+        print('Exception, ', e)
+        return None, None, None
+
+    return azan, timezone, int(timestamp)
 
 
-def get_now():
-    TEH = pytz.timezone('Asia/Tehran')
+def get_now(timezone):
+    TEH = pytz.timezone(timezone)
     now = datetime.datetime.now(TEH)
     now_text = str(now).split(' ')[-1].split('.')[0]
+
     return now_text
 
 
@@ -53,19 +67,24 @@ def delta(time1, time2, fix_hour):
     return (h, m, s)
 
 
-# EdgeCase: Last day of month if person ask after azan
+def calculate_reminder(city, new_timestamp=None):
+    azan, timezone, timestamp = get_azan(city, timestamp=new_timestamp)
+    if azan is None:
+        return None, None, None
+    azan += ":00"
+    now = get_now(timezone)
 
-def calculate_reminder(city, azan_day=None):
-    azan, day = get_azan(city, azan_day)
-    now = get_now()
-    rH, rM, rS = delta(now, azan, bool(azan_day))
+    rH, rM, rS = delta(now, azan, bool(new_timestamp))
+
+    logger.debug(f"Now: {now} Azan is: {azan} >> {rH}:{rM}:{rS}")
     if rH < 0:
-        rH, rM, rS = calculate_reminder(day + 1)
+        rH, rM, rS = calculate_reminder(city, new_timestamp=timestamp + (24 * 60 * 60))
     return rH, rM, rS
 
 
 if __name__ == "__main__":
-    city = "بيرجند"
+    city = "چين"
+    ch.setLevel(logging.DEBUG)
     print(calculate_reminder(city))
 
 """
