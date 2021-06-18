@@ -8,7 +8,7 @@ Digi-FOSS Bot Features
 #### Panel
 
 ```
-/panel
+/help
 ```
 
 #### Delete Message
