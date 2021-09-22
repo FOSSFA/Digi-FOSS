@@ -1,4 +1,6 @@
 # Digi-Foss
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FFOSSFA%2FDigi-FOSS.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FFOSSFA%2FDigi-FOSS?ref=badge_shield)
+
 Bot supervisor and contributor to admins in Group Management in [FOSS Family](https://t.me/foss_family) 
 
 ## Feature
@@ -96,3 +98,7 @@ This Feature Takes the First to Fourth Comments of Posts that are Forwarded to Y
 - [x] ban and unban users
 - [x] Mute users
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FFOSSFA%2FDigi-FOSS.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FFOSSFA%2FDigi-FOSS?ref=badge_large)
